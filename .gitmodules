@@ -16,3 +16,6 @@
 	path = lib/wrapped-m-token
 	url = https://github.com/m0-foundation/wrapped-m-token.git
 	branch = feat/swap-facility-support
+[submodule "lib/newton-contracts"]
+	path = lib/newton-contracts
+	url = https://github.com/newt-foundation/newton-contracts

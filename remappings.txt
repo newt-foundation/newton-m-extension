@@ -1,1 +1,2 @@
 @openzeppelin/contracts/=lib/common/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts/
+newton-contracts/=lib/newton-contracts/src/
