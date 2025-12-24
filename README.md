@@ -8,14 +8,17 @@ The contract is designed to be deployed behind transparent upgradeable proxies a
 
 ## Overview
 
-NewtonMExtension extends the `MExtension` base contract and adds Newton Policy protection through the `NewtonProtected` mixin. When policy protection is enabled, all protected functions can only be called through the `MExtensionProtectedProxy`, which validates Newton Policy attestations before executing operations.
+NewtonMExtension extends the `MExtension` base contract and adds Newton Policy protection through the `NewtonProtected` mixin. This implementation demonstrates the **proxy pattern** for integrating Newton Policy attestation validation - one of two primary integration approaches available to developers.
+
+When policy protection is enabled, all protected functions can only be called through the `MExtensionProtectedProxy`, which validates Newton Policy attestations before executing operations. The integration pattern follows a similar approach to [Chainlink oracle integrations](https://docs.chain.link/data-feeds/using-data-feeds), where contracts extend from a base client class (`NewtonPolicyClient`) that provides attestation validation helpers.
 
 ### Key Features
 
-- **Newton Policy Protection**: All critical token operations require valid policy attestations
+- **Newton Policy Protection**: All critical token operations require valid policy attestations containing the exact intent with expiration
 - **Non-Rebasing Token**: Wraps `$M` into a stable, non-rebasing ERC-20 token
 - **Upgradeable**: Deployed behind transparent upgradeable proxies
 - **SwapFacility Integration**: Works with the M Extension framework's SwapFacility for wrapping/unwrapping
+- **Flexible Integration**: Demonstrates proxy pattern; direct inheritance pattern also supported
 
 ---
 
@@ -35,9 +38,10 @@ The main token contract that:
 
 The proxy contract that:
 
-- Validates Newton Policy attestations
+- Validates Newton Policy attestations before forwarding calls
 - Routes validated calls to `NewtonMExtension`
 - Implements `NewtonPolicyClient` for policy management
+- Handles `msg.sender` context: the proxy receives user calls and forwards them with proper context after validation
 
 #### `NewtonProtected`
 
@@ -46,6 +50,57 @@ Abstract contract providing:
 - Storage management for proxy configuration
 - `onlyERC20ProtectedProxy` modifier for function protection
 - Proxy enable/disable functionality
+
+---
+
+## Attestation Validation
+
+Newton Policy attestations contain the **exact intent** that is approved, along with an expiration block number. The attestation structure includes:
+
+- **Intent Data**: The complete function call data (function selector + encoded parameters)
+- **Expiration**: Block number after which the attestation is no longer valid
+- **BLS Signature**: Protocol-validated signature of the intent hash that the Newton Policy system is attesting for
+
+This ensures that each attestation is purpose-specific and cannot be reused for different operations. When `_validateAttestation()` is called, the Newton Policy validates that:
+
+1. The attestation's intent matches the actual function call being made
+2. The attestation has not expired (current block <= expiration block)
+3. The BLS signature is valid for the intent hash
+
+For example, a transfer attestation contains the recipient address in the intent data. You cannot use a transfer attestation intended for `addressA` to execute a transfer to `addressB` - the intent validation would fail.
+
+The integration pattern mirrors [Chainlink oracle integrations](https://docs.chain.link/data-feeds/using-data-feeds), where contracts extend `NewtonPolicyClient` to access attestation validation helpers that ensure correct usage of the protocol.
+
+---
+
+## Integration Patterns
+
+NewtonMExtension demonstrates the **proxy pattern** for integrating Newton Policy protection, but developers have two primary integration approaches:
+
+### 1. Proxy Pattern (Demonstrated Here)
+
+The proxy pattern minimizes code changes to existing contracts:
+
+- Token contract extends `NewtonProtected` mixin
+- Protected functions use `onlyERC20ProtectedProxy` modifier
+- Separate `MExtensionProtectedProxy` contract handles attestation validation
+- Proxy inherits from `NewtonPolicyClient` for validation helpers
+- Users interact with the proxy, which validates attestations then forwards calls to the token
+
+**Advantages**: Minimal changes to existing token logic, clear separation of concerns
+
+### 2. Direct Inheritance Pattern
+
+Alternatively, contracts can integrate directly:
+
+- Token contract extends `NewtonPolicyClient` directly
+- Protected functions call `_validateAttestation()` inline
+- No separate proxy contract needed
+- Users interact directly with the token contract
+
+**Advantages**: Simpler architecture, fewer contracts to deploy
+
+Both patterns provide the same security guarantees and require valid Newton Policy attestations for protected operations.
 
 ---
 
@@ -68,7 +123,19 @@ All protected functions revert if:
 
 - Policy protection is enabled but no proxy is set
 - The caller is not the configured `MExtensionProtectedProxy`
-- The attestation validation fails
+- The attestation validation fails (intent mismatch, expired, or invalid signature)
+
+### How msg.sender Works with the Proxy
+
+When using the proxy pattern, the `msg.sender` context is handled as follows:
+
+1. User calls proxy function (e.g., `proxy.transfer(attestation)`)
+2. Proxy validates the attestation against the intent data
+3. Proxy forwards the call to the token contract with the original user context
+4. Token contract receives the call from the proxy and validates `msg.sender == proxy`
+5. The proxy ensures proper `msg.sender` propagation for functions like `approve` and `transferFrom`
+
+The proxy acts as a trusted intermediary that validates attestations before allowing operations to proceed with the correct sender context.
 
 ---
 
@@ -118,7 +185,7 @@ proxy.transfer(attestation);
 proxy.mint(attestation);
 ```
 
-The attestation must be validated by the Newton Policy system before the operation executes.
+The attestation must contain the exact intent (function call data including all parameters) and be validated by the Newton Policy system before the operation executes. Each attestation is purpose-specific - a transfer attestation for recipient A cannot be used to transfer to recipient B.
 
 ---
 
