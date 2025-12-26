@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.27;
 
-import { AccessControlUpgradeable } from "../../../lib/common/lib/openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
-import { PausableUpgradeable } from "../../../lib/common/lib/openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol";
+import {
+    AccessControlUpgradeable
+} from "../../../lib/common/lib/openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
+import {
+    PausableUpgradeable
+} from "../../../lib/common/lib/openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol";
 
-import { IPausable } from "./IPausable.sol";
+import {IPausable} from "./IPausable.sol";
 
 /**
  * @title Pausable

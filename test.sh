@@ -34,7 +34,9 @@ fi
 
 if [ -z "$test" ]; then
 	if [ -z "$directory" ]; then
-		forge test --match-path "test/*" $gasReport $verbosity --force
+		# Exclude integration tests by default (they require MAINNET_RPC_URL)
+		# Use 'make integration' to run integration tests explicitly
+		forge test --match-path "test/*" --no-match-path "test/integration/*" $gasReport $verbosity --force
 	else
 		forge test --match-path "$directory/*.t.sol" $gasReport $verbosity --force
 	fi

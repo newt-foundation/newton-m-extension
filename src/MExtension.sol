@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity 0.8.26;
+pragma solidity 0.8.27;
 
-import { ERC20ExtendedUpgradeable } from "../lib/common/src/ERC20ExtendedUpgradeable.sol";
+import {ERC20ExtendedUpgradeable} from "../lib/common/src/ERC20ExtendedUpgradeable.sol";
 
-import { IERC20 } from "../lib/common/src/interfaces/IERC20.sol";
+import {IERC20} from "../lib/common/src/interfaces/IERC20.sol";
 
-import { IMTokenLike } from "./interfaces/IMTokenLike.sol";
-import { IMExtension } from "./interfaces/IMExtension.sol";
-import { ISwapFacility } from "./swap/interfaces/ISwapFacility.sol";
+import {IMTokenLike} from "./interfaces/IMTokenLike.sol";
+import {IMExtension} from "./interfaces/IMExtension.sol";
+import {ISwapFacility} from "./swap/interfaces/ISwapFacility.sol";
 
 /**
  * @title  MExtension
@@ -71,7 +71,14 @@ abstract contract MExtension is IMExtension, ERC20ExtendedUpgradeable {
     }
 
     /// @inheritdoc IMExtension
-    function unwrap(address /* recipient */, uint256 amount) external onlySwapFacility {
+    function unwrap(
+        address,
+        /* recipient */
+        uint256 amount
+    )
+        external
+        onlySwapFacility
+    {
         // NOTE: `msg.sender` is always SwapFacility contract.
         //       `ISwapFacility.msgSender()` is used to ensure that the original caller is passed to `_beforeUnwrap`.
         // NOTE: `recipient` is not used in this function as the $M is always sent to SwapFacility contract.

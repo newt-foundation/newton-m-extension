@@ -229,3 +229,69 @@ The `SwapFacility` is the exclusive entry point for wrapping and unwrapping oper
 - `newton-contracts`: Newton Policy system for attestation validation
 - `MExtension`: Base contract for M token wrapping functionality
 - OpenZeppelin: Upgradeable contracts and ERC-20 implementation
+
+## Setup and Installation
+
+### Installing Dependencies
+
+When cloning this repository for the first time:
+
+```bash
+# Install npm dependencies (this automatically applies patches via postinstall hook)
+npm install
+
+# Install Foundry dependencies
+forge install
+```
+
+**Patches are automatically applied** via:
+
+1. **npm postinstall hook** - Runs automatically after `npm install`
+2. **Build process** - Patches are checked/applied before each build
+
+### Automatic Patch Application
+
+This repository includes patches for the `newton-contracts` dependency to fix compilation issues with Solidity 0.8.27. The patches are automatically applied:
+
+- **After `npm install`** - via npm's `postinstall` script hook
+- **During builds** - via `build.sh` which checks and applies patches before compiling
+- **No manual steps required** - patches apply automatically when needed
+
+The patches fix:
+
+1. **SlashingLib.sol**: Updates Math import to use correct OpenZeppelin version
+2. **NewtonPolicyFactory.sol**: Fixes ProxyAdmin constructor call  
+3. **foundry.toml**: Updates OpenZeppelin remapping to versioned directory
+
+### Manual Patch Application (if needed)
+
+If you need to manually apply patches:
+
+```bash
+node scripts/apply-patches.js
+```
+
+The script is idempotent - it safely skips patches that are already applied.
+
+### Git Status: Modified Submodules
+
+After patches are applied, `git status` will show `lib/newton-contracts` and `lib/wrapped-m-token` as modified. **This is expected** - patches modify files within the submodules to fix compilation issues.
+
+To ignore these submodule changes in git:
+
+```bash
+# Configure git to ignore submodule changes
+git config submodule.lib/newton-contracts.ignore all
+git config submodule.lib/wrapped-m-token.ignore all
+```
+
+Or add to `.git/config`:
+
+```ini
+[submodule "lib/newton-contracts"]
+    ignore = all
+[submodule "lib/wrapped-m-token"]
+    ignore = all
+```
+
+The patches are version-controlled in `patches/newton-contracts/` and `patches/wrapped-m-token/`, so modifications are reproducible and don't need to be committed to the submodules.

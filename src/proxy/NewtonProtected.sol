@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity 0.8.26;
+pragma solidity 0.8.27;
 
 import {INewtonProtected} from "./INewtonProtected.sol";
 import {MExtensionProtectedProxy} from "./MExtensionProtectedProxy.sol";

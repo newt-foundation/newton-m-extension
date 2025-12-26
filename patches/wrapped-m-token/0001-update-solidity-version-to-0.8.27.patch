@@ -1,0 +1,396 @@
+diff --git a/foundry.toml b/foundry.toml
+index b014462..e091572 100644
+--- a/foundry.toml
++++ b/foundry.toml
+@@ -2,7 +2,7 @@
+ gas_reports = ["*"]
+ gas_reports_ignore = []
+ ignored_error_codes = []
+-solc_version = "0.8.26"
++solc_version = "0.8.27"
+ optimizer = true
+ optimizer_runs = 999999
+ verbosity = 3
+diff --git a/script/Deploy.s.sol b/script/Deploy.s.sol
+index 9a6403f..223d239 100644
+--- a/script/Deploy.s.sol
++++ b/script/Deploy.s.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Script, console2 } from "../lib/forge-std/src/Script.sol";
+ 
+diff --git a/script/DeployBase.sol b/script/DeployBase.sol
+index 6313927..367d217 100644
+--- a/script/DeployBase.sol
++++ b/script/DeployBase.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { ContractHelper } from "../lib/common/src/libs/ContractHelper.sol";
+ import { Proxy } from "../lib/common/src/Proxy.sol";
+diff --git a/script/DeployUpgradeMainnet.s.sol b/script/DeployUpgradeMainnet.s.sol
+index 271b8cc..ff3f383 100644
+--- a/script/DeployUpgradeMainnet.s.sol
++++ b/script/DeployUpgradeMainnet.s.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Script, console2 } from "../lib/forge-std/src/Script.sol";
+ 
+diff --git a/src/EarnerManager.sol b/src/EarnerManager.sol
+index 04d0e91..315cbdf 100644
+--- a/src/EarnerManager.sol
++++ b/src/EarnerManager.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Migratable } from "../lib/common/src/Migratable.sol";
+ 
+diff --git a/src/ListOfEarnersToMigrate.sol b/src/ListOfEarnersToMigrate.sol
+index 4c0b8ea..bf56380 100644
+--- a/src/ListOfEarnersToMigrate.sol
++++ b/src/ListOfEarnersToMigrate.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ /**
+  * @title  Helper contract to retrieve earners for migrating a WrappedMToken contract from V1 to V2.
+diff --git a/src/WrappedMToken.sol b/src/WrappedMToken.sol
+index 37fe39e..0ee53ed 100644
+--- a/src/WrappedMToken.sol
++++ b/src/WrappedMToken.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IndexingMath } from "../lib/common/src/libs/IndexingMath.sol";
+ import { UIntMath } from "../lib/common/src/libs/UIntMath.sol";
+diff --git a/src/WrappedMTokenMigratorV1.sol b/src/WrappedMTokenMigratorV1.sol
+index 9d6947b..042e872 100644
+--- a/src/WrappedMTokenMigratorV1.sol
++++ b/src/WrappedMTokenMigratorV1.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IndexingMath } from "../lib/common/src/libs/IndexingMath.sol";
+ 
+diff --git a/src/interfaces/IEarnerManager.sol b/src/interfaces/IEarnerManager.sol
+index 1a02fa2..dbf7451 100644
+--- a/src/interfaces/IEarnerManager.sol
++++ b/src/interfaces/IEarnerManager.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IMigratable } from "../../lib/common/src/interfaces/IMigratable.sol";
+ 
+diff --git a/src/interfaces/IMTokenLike.sol b/src/interfaces/IMTokenLike.sol
+index 080e94d..7ad808d 100644
+--- a/src/interfaces/IMTokenLike.sol
++++ b/src/interfaces/IMTokenLike.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ /**
+  * @title  Subset of M Token interface required for source contracts.
+diff --git a/src/interfaces/IRegistrarLike.sol b/src/interfaces/IRegistrarLike.sol
+index 2981059..5244491 100644
+--- a/src/interfaces/IRegistrarLike.sol
++++ b/src/interfaces/IRegistrarLike.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ /**
+  * @title  Subset of Registrar interface required for source contracts.
+diff --git a/src/interfaces/ISwapFacilityLike.sol b/src/interfaces/ISwapFacilityLike.sol
+index 8d8042e..efd4703 100644
+--- a/src/interfaces/ISwapFacilityLike.sol
++++ b/src/interfaces/ISwapFacilityLike.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ /**
+  * @title  Subset of SwapFacility interface.
+diff --git a/src/interfaces/IWrappedMToken.sol b/src/interfaces/IWrappedMToken.sol
+index 496a008..3959126 100644
+--- a/src/interfaces/IWrappedMToken.sol
++++ b/src/interfaces/IWrappedMToken.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: BUSL-1.1
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IERC20Extended } from "../../lib/common/src/interfaces/IERC20Extended.sol";
+ import { IMigratable } from "../../lib/common/src/interfaces/IMigratable.sol";
+diff --git a/test/integration/Deploy.t.sol b/test/integration/Deploy.t.sol
+index 700ff84..8586145 100644
+--- a/test/integration/Deploy.t.sol
++++ b/test/integration/Deploy.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Test } from "../../lib/forge-std/src/Test.sol";
+ 
+diff --git a/test/integration/Migration.sol b/test/integration/Migration.sol
+index a14b025..a85f2a1 100644
+--- a/test/integration/Migration.sol
++++ b/test/integration/Migration.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { console } from "../../lib/forge-std/src/Test.sol";
+ 
+diff --git a/test/integration/MorphoBlue.t.sol b/test/integration/MorphoBlue.t.sol
+index 029ab2e..5b0c752 100644
+--- a/test/integration/MorphoBlue.t.sol
++++ b/test/integration/MorphoBlue.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IERC20 } from "../../lib/common/src/interfaces/IERC20.sol";
+ 
+diff --git a/test/integration/Protocol.t.sol b/test/integration/Protocol.t.sol
+index d72f2d0..6a24052 100644
+--- a/test/integration/Protocol.t.sol
++++ b/test/integration/Protocol.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { console2 } from "../../lib/forge-std/src/Test.sol";
+ 
+diff --git a/test/integration/TestBase.sol b/test/integration/TestBase.sol
+index b97a76d..5dc872c 100644
+--- a/test/integration/TestBase.sol
++++ b/test/integration/TestBase.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IERC20 } from "../../lib/common/src/interfaces/IERC20.sol";
+ import { IERC20Extended } from "../../lib/common/src/interfaces/IERC20Extended.sol";
+diff --git a/test/integration/UniswapV3.t.sol b/test/integration/UniswapV3.t.sol
+index 6cfd256..8dba006 100644
+--- a/test/integration/UniswapV3.t.sol
++++ b/test/integration/UniswapV3.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IERC20 } from "../../lib/common/src/interfaces/IERC20.sol";
+ 
+diff --git a/test/integration/Upgrade.t.sol b/test/integration/Upgrade.t.sol
+index 7b44dfd..331952e 100644
+--- a/test/integration/Upgrade.t.sol
++++ b/test/integration/Upgrade.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Test } from "../../lib/forge-std/src/Test.sol";
+ 
+diff --git a/test/integration/vendor/morpho-blue/Interfaces.sol b/test/integration/vendor/morpho-blue/Interfaces.sol
+index d023e22..a418897 100644
+--- a/test/integration/vendor/morpho-blue/Interfaces.sol
++++ b/test/integration/vendor/morpho-blue/Interfaces.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ type Id is bytes32;
+ 
+diff --git a/test/integration/vendor/morpho-blue/MorphoTestBase.sol b/test/integration/vendor/morpho-blue/MorphoTestBase.sol
+index 8357eb8..b783e9d 100644
+--- a/test/integration/vendor/morpho-blue/MorphoTestBase.sol
++++ b/test/integration/vendor/morpho-blue/MorphoTestBase.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IERC20 } from "../../../../lib/common/src/interfaces/IERC20.sol";
+ 
+diff --git a/test/integration/vendor/protocol/Interfaces.sol b/test/integration/vendor/protocol/Interfaces.sol
+index dc549ec..28fa71c 100644
+--- a/test/integration/vendor/protocol/Interfaces.sol
++++ b/test/integration/vendor/protocol/Interfaces.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ interface IRegistrarLike {
+     function addToList(bytes32 list, address account) external;
+diff --git a/test/integration/vendor/uniswap-v3/Interfaces.sol b/test/integration/vendor/uniswap-v3/Interfaces.sol
+index cc8dca0..939b4f4 100644
+--- a/test/integration/vendor/uniswap-v3/Interfaces.sol
++++ b/test/integration/vendor/uniswap-v3/Interfaces.sol
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ interface INonfungiblePositionManager {
+     struct MintParams {
+diff --git a/test/integration/vendor/uniswap-v3/Utils.sol b/test/integration/vendor/uniswap-v3/Utils.sol
+index 06bb2fd..5119cdb 100644
+--- a/test/integration/vendor/uniswap-v3/Utils.sol
++++ b/test/integration/vendor/uniswap-v3/Utils.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ uint256 constant PRECISION = 2 ** 96;
+ 
+diff --git a/test/unit/EarnerManager.sol b/test/unit/EarnerManager.sol
+index 39c3e7d..7bf67d5 100644
+--- a/test/unit/EarnerManager.sol
++++ b/test/unit/EarnerManager.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Test } from "../../lib/forge-std/src/Test.sol";
+ 
+diff --git a/test/unit/Migrations.t.sol b/test/unit/Migrations.t.sol
+index b97711d..a19adc6 100644
+--- a/test/unit/Migrations.t.sol
++++ b/test/unit/Migrations.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { Proxy } from "../../lib/common/src/Proxy.sol";
+ import { Test } from "../../lib/forge-std/src/Test.sol";
+diff --git a/test/unit/Stories.t.sol b/test/unit/Stories.t.sol
+index 95e8c87..d8f7545 100644
+--- a/test/unit/Stories.t.sol
++++ b/test/unit/Stories.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IndexingMath } from "../../lib/common/src/libs/IndexingMath.sol";
+ 
+diff --git a/test/unit/WrappedMToken.t.sol b/test/unit/WrappedMToken.t.sol
+index 6de11d2..2ac30fd 100644
+--- a/test/unit/WrappedMToken.t.sol
++++ b/test/unit/WrappedMToken.t.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { console2 } from "../../lib/forge-std/src/Test.sol";
+ 
+diff --git a/test/utils/EarnerManagerHarness.sol b/test/utils/EarnerManagerHarness.sol
+index fb2e798..e2b2775 100644
+--- a/test/utils/EarnerManagerHarness.sol
++++ b/test/utils/EarnerManagerHarness.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { EarnerManager } from "../../src/EarnerManager.sol";
+ 
+diff --git a/test/utils/Invariants.sol b/test/utils/Invariants.sol
+index badd494..491069b 100644
+--- a/test/utils/Invariants.sol
++++ b/test/utils/Invariants.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IndexingMath } from "../../lib/common/src/libs/IndexingMath.sol";
+ // import { console2 } from "../../lib/forge-std/src/Test.sol";
+diff --git a/test/utils/Mocks.sol b/test/utils/Mocks.sol
+index 4e50749..6fae1e1 100644
+--- a/test/utils/Mocks.sol
++++ b/test/utils/Mocks.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { IERC20 } from "../../lib/common/src/interfaces/IERC20.sol";
+ 
+diff --git a/test/utils/WrappedMTokenHarness.sol b/test/utils/WrappedMTokenHarness.sol
+index edae0f6..db8235d 100644
+--- a/test/utils/WrappedMTokenHarness.sol
++++ b/test/utils/WrappedMTokenHarness.sol
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: UNLICENSED
+ 
+-pragma solidity 0.8.26;
++pragma solidity 0.8.27;
+ 
+ import { WrappedMToken } from "../../src/WrappedMToken.sol";
+

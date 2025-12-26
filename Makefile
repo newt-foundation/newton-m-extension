@@ -4,6 +4,7 @@
 
 # dapp deps
 update:; forge update
+install-deps:; forge install
 
 # Default to actual deployment (not simulation)
 DRY_RUN ?= false

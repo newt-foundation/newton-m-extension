@@ -13,6 +13,7 @@
   },
   "homepage": "https://github.com/MZero-Labs/foundry-template#readme",
   "scripts": {
+    "postinstall": "node scripts/apply-patches.js",
     "build": "make -B build",
     "clean": "make -B clean",
     "compile": "forge compile",

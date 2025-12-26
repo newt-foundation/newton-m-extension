@@ -1,0 +1,12 @@
+--- a/src/core/NewtonPolicyFactory.sol
++++ b/src/core/NewtonPolicyFactory.sol
+@@ -38,7 +38,7 @@ contract NewtonPolicyFactory is OwnableUpgradeable {
+     ) public initializer {
+         __Ownable_init();
+         _transferOwnership(owner);
+         implementation = address(new NewtonPolicy());
+-        proxyAdmin = new ProxyAdmin();
++        proxyAdmin = new ProxyAdmin(owner);
+         verifiers[owner] = true;
+     }
+

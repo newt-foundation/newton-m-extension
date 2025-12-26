@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity 0.8.26;
+pragma solidity 0.8.27;
 
 import {IERC20} from "../lib/common/src/interfaces/IERC20.sol";
 import {MExtension} from "./MExtension.sol";
@@ -15,7 +15,7 @@ abstract contract NewtonMExtensionStorageLayout {
 
     // keccak256(abi.encode(uint256(keccak256("M0.storage.NewtonMExtension")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant _NEWTON_M_EXTENSION_STORAGE_LOCATION =
-        0x5db7832de89694644441703dce434ce616bfd1332a090f87aa90736d132321400;
+        0x5db7832de89694644441703dce434ce616bfd1332a090f87aa90736d13232149;
 
     function _getNewtonMExtensionStorageLocation() internal pure returns (NewtonMExtensionStorageStruct storage $) {
         assembly {
@@ -74,34 +74,6 @@ contract NewtonMExtension is NewtonMExtensionStorageLayout, MExtension, NewtonPr
 
     /* ============ Newton Policy Protected Functions ============ */
 
-    /// @notice Newton Policy Protected function to transfer tokens
-    function transfer(address to, uint256 amount) public virtual override onlyERC20ProtectedProxy returns (bool) {
-        address owner = _msgSender();
-        _transfer(owner, to, amount);
-        return true;
-    }
-
-    /// @notice Newton Policy Protected function to approve spender
-    function approve(address spender, uint256 amount) public virtual override onlyERC20ProtectedProxy returns (bool) {
-        address owner = _msgSender();
-        _approve(owner, spender, amount);
-        return true;
-    }
-
-    /// @notice Newton Policy Protected function to transfer tokens from another address
-    function transferFrom(address from, address to, uint256 amount)
-        public
-        virtual
-        override
-        onlyERC20ProtectedProxy
-        returns (bool)
-    {
-        address spender = _msgSender();
-        _spendAllowance(from, spender, amount);
-        _transfer(from, to, amount);
-        return true;
-    }
-
     /// @notice Newton Policy Protected function to mint tokens
     function mint(address recipient, uint256 amount) external onlyERC20ProtectedProxy {
         _mint(recipient, amount);
@@ -110,6 +82,54 @@ contract NewtonMExtension is NewtonMExtensionStorageLayout, MExtension, NewtonPr
     /// @notice Newton Policy Protected function to burn tokens
     function burn(address account, uint256 amount) external onlyERC20ProtectedProxy {
         _burn(account, amount);
+    }
+
+    /* ============ Hooks For Internal Interactive Functions ============ */
+
+    /* ============ Hooks For Internal Interactive Functions ============ */
+
+    /**
+     * @dev   Hook called before approval of M Extension token.
+     * @param account   The sender's address.
+     * @param spender   The spender address.
+     * @param amount    The amount to be approved.
+     */
+    function _beforeApprove(address account, address spender, uint256 amount) internal view override {
+        // Enforce Newton Policy protection when enabled
+        if (_getERC20ProtectedProxyEnabled()) {
+            if (address(_getERC20ProtectedProxy()) == address(0)) {
+                revert ERC20ProtectedProxyNotSet();
+            }
+            if (msg.sender != address(_getERC20ProtectedProxy())) {
+                revert OnlyERC20ProtectedProxy();
+            }
+        }
+    }
+
+    /**
+     * @dev   Hook called before transferring M Extension token.
+     */
+    function _beforeTransfer(
+        address,
+        /* sender */
+        address,
+        /* recipient */
+        uint256 /* amount */
+    )
+        internal
+        view
+        override
+    {
+        // Enforce Newton Policy protection when enabled
+        // Note: This protects both transfer() and transferFrom() since transferFrom calls _transfer
+        if (_getERC20ProtectedProxyEnabled()) {
+            if (address(_getERC20ProtectedProxy()) == address(0)) {
+                revert ERC20ProtectedProxyNotSet();
+            }
+            if (msg.sender != address(_getERC20ProtectedProxy())) {
+                revert OnlyERC20ProtectedProxy();
+            }
+        }
     }
 
     /* ============ Internal Functions ============ */

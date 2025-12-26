@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.27;
 
-import { AccessControlUpgradeable } from "../../../lib/common/lib/openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
+import {
+    AccessControlUpgradeable
+} from "../../../lib/common/lib/openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
 
-import { IFreezable } from "./IFreezable.sol";
+import {IFreezable} from "./IFreezable.sol";
 
 abstract contract FreezableStorageLayout {
     /// @custom:storage-location erc7201:M0.storage.Freezable
