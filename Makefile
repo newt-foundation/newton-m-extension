@@ -8,13 +8,24 @@ update:; forge update
 # Default to actual deployment (not simulation)
 DRY_RUN ?= false
 
+# Default to running a simulation before broadcasting.
+# Set SKIP_SIMULATION=true to avoid the pre-broadcast simulation (and its early console logs).
+SKIP_SIMULATION ?= false
+
+# Conditionally set simulation flags
+ifeq ($(SKIP_SIMULATION),true)
+	SIMULATION_FLAGS = --skip-simulation
+else
+	SIMULATION_FLAGS =
+endif
+
 # Conditionally set broadcast and verify flags
 ifeq ($(DRY_RUN),true)
 	BROADCAST_FLAGS =
 	BROADCAST_ONLY_FLAGS =
 else
-	BROADCAST_FLAGS = --broadcast --verify
-	BROADCAST_ONLY_FLAGS = --broadcast
+	BROADCAST_FLAGS = --broadcast --verify $(SIMULATION_FLAGS)
+	BROADCAST_ONLY_FLAGS = --broadcast $(SIMULATION_FLAGS)
 endif
 
 # Deployment helpers

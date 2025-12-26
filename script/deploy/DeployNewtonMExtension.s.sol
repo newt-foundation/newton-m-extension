@@ -6,6 +6,7 @@ import {DeployBase} from "./DeployBase.s.sol";
 
 import {NewtonMExtension} from "../../src/NewtonMExtension.sol";
 import {MExtensionProtectedProxy} from "../../src/proxy/MExtensionProtectedProxy.sol";
+import {console2} from "forge-std/console2.sol";
 
 /// @notice Deploys a NewtonMExtension behind a transparent upgradeable proxy, then deploys the
 ///         Newton Policy enforcement proxy (MExtensionProtectedProxy) and wires them together.
@@ -71,6 +72,14 @@ contract DeployNewtonMExtension is DeployBase {
         NewtonMExtension(tokenProxy).enableERC20ProtectedProxy();
 
         vm.stopBroadcast();
+
+        console2.log("================================================================================");
+        console2.log("DeployNewtonMExtension complete");
+        console2.log("--------------------------------------------------------------------------------");
+        console2.log("NewtonMExtension implementation: ", implementation);
+        console2.log("ERC20 token proxy (TransparentUpgradeableProxy): ", tokenProxy);
+        console2.log("Policy client (MExtensionProtectedProxy): ", protectedProxy);
+        console2.log("================================================================================");
 
         // Persist the token proxy address in deployments/<chainId>.json under EXTENSION_NAME
         _writeDeployment(block.chainid, _getExtensionName(), tokenProxy);
