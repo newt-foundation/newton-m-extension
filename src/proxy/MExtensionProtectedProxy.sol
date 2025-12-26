@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity 0.8.26;
+pragma solidity ^0.8.26;
 
 import {NewtonMessage} from "newton-contracts/core/NewtonMessage.sol";
 import {NewtonPolicyClient} from "newton-contracts/mixins/NewtonPolicyClient.sol";

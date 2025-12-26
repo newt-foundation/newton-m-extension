@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 
-pragma solidity 0.8.26;
+pragma solidity ^0.8.26;
 
 import {IERC20} from "../lib/common/src/interfaces/IERC20.sol";
 import {MExtension} from "./MExtension.sol";
+import {MExtensionProtectedProxy} from "./proxy/MExtensionProtectedProxy.sol";
 import {NewtonProtected} from "./proxy/NewtonProtected.sol";
 
 abstract contract NewtonMExtensionStorageLayout {
@@ -15,7 +16,7 @@ abstract contract NewtonMExtensionStorageLayout {
 
     // keccak256(abi.encode(uint256(keccak256("M0.storage.NewtonMExtension")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant _NEWTON_M_EXTENSION_STORAGE_LOCATION =
-        0x5db7832de89694644441703dce434ce616bfd1332a090f87aa90736d132321400;
+        0xffc23ba615845ae8874de73e13fd6f9657bc5d27b737abf87a6f4dc5c67c9f00;
 
     function _getNewtonMExtensionStorageLocation() internal pure returns (NewtonMExtensionStorageStruct storage $) {
         assembly {
