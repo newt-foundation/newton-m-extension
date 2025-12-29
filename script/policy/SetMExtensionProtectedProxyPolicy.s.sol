@@ -34,7 +34,7 @@ contract SetMExtensionProtectedProxyPolicy is Script {
         uint256 expireAfterRaw = vm.envUint("EXPIRE_AFTER");
         require(expireAfterRaw <= type(uint32).max, "EXPIRE_AFTER too large for uint32");
 
-        string memory paramsFile = vm.envOr("PARAMS_FILE", string("sample_client_params.json"));
+        string memory paramsFile = vm.envOr("PARAMS_FILE", string("policy_params.json"));
         require(bytes(paramsFile).length != 0, "PARAMS_FILE is required");
 
         policyClient = vm.envOr("POLICY_CLIENT", address(0));
