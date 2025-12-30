@@ -9,13 +9,24 @@ install-deps:; forge install
 # Default to actual deployment (not simulation)
 DRY_RUN ?= false
 
+# Default to running a simulation before broadcasting.
+# Set SKIP_SIMULATION=true to avoid the pre-broadcast simulation (and its early console logs).
+SKIP_SIMULATION ?= false
+
+# Conditionally set simulation flags
+ifeq ($(SKIP_SIMULATION),true)
+	SIMULATION_FLAGS = --skip-simulation
+else
+	SIMULATION_FLAGS =
+endif
+
 # Conditionally set broadcast and verify flags
 ifeq ($(DRY_RUN),true)
 	BROADCAST_FLAGS =
 	BROADCAST_ONLY_FLAGS =
 else
-	BROADCAST_FLAGS = --broadcast --verify
-	BROADCAST_ONLY_FLAGS = --broadcast
+	BROADCAST_FLAGS = --broadcast --verify $(SIMULATION_FLAGS)
+	BROADCAST_ONLY_FLAGS = --broadcast $(SIMULATION_FLAGS)
 endif
 
 # Deployment helpers
@@ -99,7 +110,38 @@ deploy-jmi-extension:
 	--skip test --slow --non-interactive $(BROADCAST_FLAGS)
 
 deploy-jmi-extension-sepolia: RPC_URL=$(SEPOLIA_RPC_URL)
-deploy-jmi-extension-sepolia: deploy-jmi-extension 
+deploy-jmi-extension-sepolia: deploy-jmi-extension
+
+deploy-newton-m-extension:
+	FOUNDRY_PROFILE=production PRIVATE_KEY=$(PRIVATE_KEY) EXTENSION_NAME=$(EXTENSION_NAME) \
+	forge script script/deploy/DeployNewtonMExtension.s.sol:DeployNewtonMExtension \
+	--rpc-url $(RPC_URL) \
+	--private-key $(PRIVATE_KEY) \
+	--skip test --slow --non-interactive $(BROADCAST_FLAGS)
+
+deploy-newton-m-extension-sepolia: RPC_URL=$(SEPOLIA_RPC_URL)
+deploy-newton-m-extension-sepolia: deploy-newton-m-extension
+
+#
+#
+# POLICY (Newton)
+#
+#
+
+# Set Newton policy params on an MExtensionProtectedProxy (policy client).
+# Provide either POLICY_CLIENT=<MExtensionProtectedProxy> OR TOKEN_PROXY=<NewtonMExtension proxy>.
+# PARAMS_FILE points to a file whose raw contents become `policyParams` (often JSON text).
+# EXPIRE_AFTER is in seconds.
+set-proxy-policy:
+	FOUNDRY_PROFILE=production PRIVATE_KEY=$(PRIVATE_KEY) POLICY_CLIENT=$(POLICY_CLIENT) TOKEN_PROXY=$(TOKEN_PROXY) \
+	PARAMS_FILE=$(PARAMS_FILE) EXPIRE_AFTER=$(EXPIRE_AFTER) \
+	forge script script/policy/SetMExtensionProtectedProxyPolicy.s.sol:SetMExtensionProtectedProxyPolicy \
+	--rpc-url $(RPC_URL) \
+	--private-key $(PRIVATE_KEY) \
+	--skip test --slow --non-interactive $(BROADCAST_ONLY_FLAGS)
+
+set-proxy-policy-sepolia: RPC_URL=$(SEPOLIA_RPC_URL)
+set-proxy-policy-sepolia: set-proxy-policy
 
 deploy-swap-adapter:
 	FOUNDRY_PROFILE=production PRIVATE_KEY=$(PRIVATE_KEY) \
