@@ -295,3 +295,79 @@ Or add to `.git/config`:
 ```
 
 The patches are version-controlled in `patches/newton-contracts/` and `patches/wrapped-m-token/`, so modifications are reproducible and don't need to be committed to the submodules.
+
+## Deployment Quick Start
+Below is a minimal flow to deploy the Newton M Extension token (NME) to **Sepolia** and configure a Newton policy.
+
+### 1. Create a `.env`
+The `Makefile` automatically loads `.env` (via `-include .env`). Use **Makefile-style** env vars (no `export`, and avoid wrapping values in quotes).
+
+```bash
+# RPC
+SEPOLIA_RPC_URL=https://your-sepolia-rpc-url
+
+# Deployer
+# NOTE: this value is used both by Foundry (`--private-key`) and by scripts (`vm.envUint("PRIVATE_KEY")`).
+PRIVATE_KEY=0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+
+# Proxy admin/owner (EOA or multisig) for the ERC20 TransparentUpgradeableProxy.
+ADMIN=0xTokenOwnerPublicAddress
+
+# CREATE3 salts (strings)
+CONTRACT_NAME=NewtonMExtension
+PROTECTED_PROXY_SALT=NewtonMExtensionProtectedProxySalt
+
+# ERC-20 metadata
+EXTENSION_NAME=NewtonMExtensionTestnet
+EXTENSION_SYMBOL=NME
+
+# Newton policy (Sepolia defaults shown)
+POLICY=0xc56905b4449Cd9F6d6768622CB834Cfe75261C75
+POLICY_TASK_MANAGER=0x8cabf24f2ad134e0c25d7dd96cf901e7c430aa57
+
+# Owner for the NewtonPolicyClient inside MExtensionProtectedProxy.
+# This address must correspond to the key you use when running `make set-proxy-policy-*`.
+POLICY_CLIENT_OWNER=0xTokenOwnerPublicAddress
+```
+
+### 2. Deploy NewtonMExtension + proxies (Sepolia)
+This deploy script deploys:
+- a `NewtonMExtension` implementation
+- an ERC-20 `TransparentUpgradeableProxy` (the token address users hold)
+- a `MExtensionProtectedProxy` (policy client / enforcement proxy)
+…and wires + enables policy enforcement on the token.
+
+```bash
+make deploy-newton-m-extension-sepolia
+```
+
+Watch the output for:
+- `ERC20 token proxy (TransparentUpgradeableProxy)` (the token address)
+- `Policy client (MExtensionProtectedProxy)` (the address that will consume attestations)
+
+Note:
+Other chains may fail verification of RPC urls aren't set but Sepolia should work as expected.
+
+### 3. Set policy parameters on the policy client
+Edit `policy_params.json` with the policy params expected by your `POLICY`. For the provided test policy, this works:
+
+```json
+{
+  "check_ofac": false,
+  "check_kyc": false,
+  "check_fraud": false
+}
+```
+
+Then set the policy on the deployed `MExtensionProtectedProxy` (the policy client):
+
+```bash
+make set-proxy-policy-sepolia \
+  POLICY_CLIENT=0xMExtensionProtectedProxy \
+  PARAMS_FILE=policy_params.json \
+  EXPIRE_AFTER=31536000
+```
+
+After the transaction completes:
+- the Newton protocol can generate attestations for the `POLICY_CLIENT`
+- the `POLICY_CLIENT` can consume attestations to perform policy-protected ERC-20 operations (`transfer`, `approve`, `transferFrom`, `mint`, `burn`)
