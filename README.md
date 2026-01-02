@@ -345,6 +345,9 @@ Watch the output for:
 - `ERC20 token proxy (TransparentUpgradeableProxy)` (the token address)
 - `Policy client (MExtensionProtectedProxy)` (the address that will consume attestations)
 
+Note:
+Other chains may fail verification of RPC urls aren't set but Sepolia should work as expected.
+
 ### 3. Set policy parameters on the policy client
 Edit `policy_params.json` with the policy params expected by your `POLICY`. For the provided test policy, this works:
 
