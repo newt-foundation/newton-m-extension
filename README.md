@@ -260,7 +260,7 @@ This repository includes patches for the `newton-contracts` dependency to fix co
 The patches fix:
 
 1. **SlashingLib.sol**: Updates Math import to use correct OpenZeppelin version
-2. **NewtonPolicyFactory.sol**: Fixes ProxyAdmin constructor call  
+2. **NewtonPolicyFactory.sol**: Fixes ProxyAdmin constructor call
 3. **foundry.toml**: Updates OpenZeppelin remapping to versioned directory
 
 ### Manual Patch Application (if needed)
@@ -297,9 +297,11 @@ Or add to `.git/config`:
 The patches are version-controlled in `patches/newton-contracts/` and `patches/wrapped-m-token/`, so modifications are reproducible and don't need to be committed to the submodules.
 
 ## Deployment Quick Start
+
 Below is a minimal flow to deploy the Newton M Extension token (NME) to **Sepolia** and configure a Newton policy.
 
 ### 1. Create a `.env`
+
 The `Makefile` automatically loads `.env` (via `-include .env`). Use **Makefile-style** env vars (no `export`, and avoid wrapping values in quotes).
 
 ```bash
@@ -331,24 +333,28 @@ POLICY_CLIENT_OWNER=0xTokenOwnerPublicAddress
 ```
 
 ### 2. Deploy NewtonMExtension + proxies (Sepolia)
+
 This deploy script deploys:
+
 - a `NewtonMExtension` implementation
 - an ERC-20 `TransparentUpgradeableProxy` (the token address users hold)
 - a `MExtensionProtectedProxy` (policy client / enforcement proxy)
-…and wires + enables policy enforcement on the token.
+  …and wires + enables policy enforcement on the token.
 
 ```bash
 make deploy-newton-m-extension-sepolia
 ```
 
 Watch the output for:
-- `ERC20 token proxy (TransparentUpgradeableProxy)` (the token address)
-- `Policy client (MExtensionProtectedProxy)` (the address that will consume attestations)
+
+- `NewtonMExtensionTestnet` (this is the token address users hold)
+- `NewtonMExtensionTestnet_PolicyClient` (the policy client that consumes attestations)
 
 Note:
 Other chains may fail verification of RPC urls aren't set but Sepolia should work as expected.
 
 ### 3. Set policy parameters on the policy client
+
 Edit `policy_params.json` with the policy params expected by your `POLICY`. For the provided test policy, this works:
 
 ```json
@@ -359,15 +365,16 @@ Edit `policy_params.json` with the policy params expected by your `POLICY`. For 
 }
 ```
 
-Then set the policy on the deployed `MExtensionProtectedProxy` (the policy client):
+Then set the policy on the deployed `NewtonMExtensionTestnet_PolicyClient` (the M-Extension Protected Proxy):
 
 ```bash
 make set-proxy-policy-sepolia \
-  POLICY_CLIENT=0xMExtensionProtectedProxy \
+  POLICY_CLIENT=0xNewtonMExtensionTestnet_PolicyClient \
   PARAMS_FILE=policy_params.json \
   EXPIRE_AFTER=31536000
 ```
 
 After the transaction completes:
+
 - the Newton protocol can generate attestations for the `POLICY_CLIENT`
 - the `POLICY_CLIENT` can consume attestations to perform policy-protected ERC-20 operations (`transfer`, `approve`, `transferFrom`, `mint`, `burn`)
