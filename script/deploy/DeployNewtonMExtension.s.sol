@@ -2,11 +2,10 @@
 
 pragma solidity 0.8.27;
 
-import {DeployBase} from "./DeployBase.s.sol";
+import { DeployBase } from "./DeployBase.s.sol";
 
-import {NewtonMExtension} from "../../src/NewtonMExtension.sol";
-import {MExtensionProtectedProxy} from "../../src/proxy/MExtensionProtectedProxy.sol";
-import {console2} from "forge-std/console2.sol";
+import { NewtonMExtension } from "../../src/NewtonMExtension.sol";
+import { MExtensionProtectedProxy } from "../../src/proxy/MExtensionProtectedProxy.sol";
 
 /// @notice Deploys a NewtonMExtension behind a transparent upgradeable proxy, then deploys the
 ///         Newton Policy enforcement proxy (MExtensionProtectedProxy) and wires them together.
@@ -73,15 +72,11 @@ contract DeployNewtonMExtension is DeployBase {
 
         vm.stopBroadcast();
 
-        console2.log("================================================================================");
-        console2.log("DeployNewtonMExtension complete");
-        console2.log("--------------------------------------------------------------------------------");
-        console2.log("NewtonMExtension implementation: ", implementation);
-        console2.log("ERC20 token proxy (TransparentUpgradeableProxy): ", tokenProxy);
-        console2.log("Policy client (MExtensionProtectedProxy): ", protectedProxy);
-        console2.log("================================================================================");
-
+        // Persist the implementation address as well (useful for debugging / verification).
+        _writeDeployment(block.chainid, string.concat(_getExtensionName(), "_Implementation"), implementation);
         // Persist the token proxy address in deployments/<chainId>.json under EXTENSION_NAME
         _writeDeployment(block.chainid, _getExtensionName(), tokenProxy);
+        // Persist the policy client address alongside the token proxy.
+        _writeDeployment(block.chainid, string.concat(_getExtensionName(), "_PolicyClient"), protectedProxy);
     }
 }

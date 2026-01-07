@@ -9,24 +9,20 @@ install-deps:; forge install
 # Default to actual deployment (not simulation)
 DRY_RUN ?= false
 
-# Default to running a simulation before broadcasting.
-# Set SKIP_SIMULATION=true to avoid the pre-broadcast simulation (and its early console logs).
-SKIP_SIMULATION ?= false
+# Default to verification on broadcast. Set VERIFY=false to skip verification.
+VERIFY ?= true
 
-# Conditionally set simulation flags
-ifeq ($(SKIP_SIMULATION),true)
-	SIMULATION_FLAGS = --skip-simulation
-else
-	SIMULATION_FLAGS =
-endif
+# NOTE: avoid `ifeq ($(VERIFY),...)` conditionals here.
+# Make evaluates `ifeq` at parse-time, so target-specific `VERIFY=false` wouldn't take effect.
+VERIFY_FLAG = $(if $(filter true,$(VERIFY)),--verify,)
 
 # Conditionally set broadcast and verify flags
 ifeq ($(DRY_RUN),true)
 	BROADCAST_FLAGS =
 	BROADCAST_ONLY_FLAGS =
 else
-	BROADCAST_FLAGS = --broadcast --verify $(SIMULATION_FLAGS)
-	BROADCAST_ONLY_FLAGS = --broadcast $(SIMULATION_FLAGS)
+	BROADCAST_FLAGS = --broadcast $(VERIFY_FLAG)
+	BROADCAST_ONLY_FLAGS = --broadcast
 endif
 
 # Deployment helpers
@@ -118,7 +114,9 @@ deploy-newton-m-extension:
 	--rpc-url $(RPC_URL) \
 	--private-key $(PRIVATE_KEY) \
 	--skip test --slow --non-interactive $(BROADCAST_FLAGS)
+	@node scripts/print-deployment.js $$(cast chain-id --rpc-url $(RPC_URL)) $(EXTENSION_NAME)
 
+deploy-newton-m-extension-sepolia: VERIFY=false
 deploy-newton-m-extension-sepolia: RPC_URL=$(SEPOLIA_RPC_URL)
 deploy-newton-m-extension-sepolia: deploy-newton-m-extension
 
